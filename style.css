@@ -1,3 +1,13 @@
+:root{
+    --dark-0: #010101;
+    --dark-1: #111;
+    --dark-2: #333;
+    --light-1: #efefef;
+    --light-2: #eee;
+    --light-3: #ccc;
+    --shadow-basic: rgba(50, 50, 93, 0.25) 0 6px 12px -2px, rgba(0, 0, 0, 0.3) 0 3px 7px -3px;
+}
+
 * {
     margin: 0;
     box-sizing: border-box;
@@ -17,40 +27,36 @@ header {
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #111;
-    box-shadow: rgba(50, 50, 93, 0.25) 0 6px 12px -2px, rgba(0, 0, 0, 0.3) 0 3px 7px -3px;
-}
-
-main {
-    min-height: 100vh;
+    background-color: var(--dark-0);
+    box-shadow: var(--shadow-basic);
 }
 
 h1 {
     color: #ccc;
 }
 
+main {
+    min-height: 100vh;
+    display: flex;
+    align-items: flex-start;
+    flex-direction: row;
+}
+
+
+/* Album grid */
 #album-grid {
     padding: 1em;
     gap: 1em;
     display: grid;
-    background-color: #eee;
     grid-template-columns: 1fr 1fr;
-}
-
-@media (min-width: 640px) {
-    #album-grid {
-        padding: 1em;
-        gap: 1em;
-        display: grid;
-        background-color: #eee;
-        grid-template-columns: repeat( auto-fit, minmax(200px, 1fr));
-    }
 }
 
 .album-card {
     position: relative;
-    box-shadow: rgba(50, 50, 93, 0.35) 0 6px 12px -2px, rgba(0, 0, 0, 0.4) 0 3px 7px -3px;
+    box-shadow: var(--shadow-basic);
     border-radius: .5em;
+    width: 150px;
+    height: 150px;
 }
 
 #current-album{
@@ -61,6 +67,8 @@ h1 {
     display: flex;
     flex-direction: column;
     align-items: center;
+    width: calc(300px + 1em);
+    height: calc(300px + 1em);
 }
 
 #current-album h2 {
@@ -102,10 +110,51 @@ h1 {
 
 footer {
     grid-column: span 3;
-    background-color: #111;
+    background-color: var(--dark-0);
     display: flex;
     justify-content: center;
     align-items: flex-end;
     padding: 2em 0;
 }
 
+/* Info Bar */
+
+#infobar {
+    width: 300px;
+    height: 100%;
+    min-height: 100vh;
+    background-color: #fff;
+}
+
+
+/* Small screens (phones) */
+@media (min-width: 320px) {
+    #album-grid {
+        grid-template-columns: 150px 150px;
+        padding: 1em 10em
+    }
+}
+
+/* Medium screens (tablets) */
+@media (min-width: 640px) {
+    #album-grid {
+        grid-template-columns: 150px 150px 150px;
+        padding: 1em 10em
+    }
+}
+
+/* Large screens (laptops) */
+@media (min-width: 1000px) {
+    #album-grid {
+        grid-template-columns: 150px 150px 150px 150px 150px;
+        padding: 1em 10em
+    }
+}
+
+/* Very Large screens (Monitors etc) */
+@media (min-width: 1366px) {
+    #album-grid {
+        grid-template-columns: 150px 150px 150px 150px 150px 150x 150px;
+        padding: 1em 10em
+    }
+}
