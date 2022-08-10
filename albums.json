@@ -1,0 +1,80 @@
+[
+    {
+        "name": "name",
+        "artist": "artist",
+        "year": "year",
+        "img": "cover.png"
+    },
+    {
+        "name": "name",
+        "artist": "artist",
+        "year": "year",
+        "img": "cover1.png"
+    },
+    {
+        "name": "name",
+        "artist": "artist",
+        "year": "year",
+        "img": "cover2.png"
+    },
+    {
+        "name": "name",
+        "artist": "artist",
+        "year": "year",
+        "img": "cover3.png"
+    },
+    {
+        "name": "name",
+        "artist": "artist",
+        "year": "year",
+        "img": "cover4.png"
+    },
+    {
+        "name": "name",
+        "artist": "artist",
+        "year": "year",
+        "img": "cover5.png"
+    },
+    {
+        "name": "name",
+        "artist": "artist",
+        "year": "year",
+        "img": "cover6.png"
+    },
+    {
+        "name": "name",
+        "artist": "artist",
+        "year": "year",
+        "img": "cover7.png"
+    },
+    {
+        "name": "name",
+        "artist": "artist",
+        "year": "year",
+        "img": "cover8.png"
+    },
+    {
+        "name": "name",
+        "artist": "artist",
+        "year": "year",
+        "img": "cover9.png"
+    },
+    {
+        "name": "name",
+        "artist": "artist",
+        "year": "year",
+        "img": "cover10.png"
+    },
+    {
+        "name": "name",
+        "artist": "artist",
+        "year": "year",
+        "img": "cover11.png"
+    },
+    {
+        "name": "name",
+        "artist": "artist",
+        "year": "year",
+        "img": "cover12.png"
+    }
+]
