@@ -1,4 +1,6 @@
-# Functional
+# Album website
+
+# Requirements
 
 - Album of the day
 - Film of the week

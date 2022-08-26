@@ -1,0 +1,25 @@
+{
+  "name": "album",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JetHughes/album.git"
+  },
+  "author": "Jet Hughes",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/JetHughes/album/issues"
+  },
+  "homepage": "https://github.com/JetHughes/album#readme",
+  "dependencies": {
+    "express": "^4.18.1",
+    "nodemon": "^2.0.19",
+    "path": "^0.12.7"
+  }
+}

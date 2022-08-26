@@ -7,7 +7,19 @@ function expandAlbumCard(album){
     album.isExpanded = !album.isExpanded
 }
 
-fetch("./albums.json").then(response => {
+fetch("https://1001albumsgenerator.com/api/v1/groups/companyx").then(response => {
+    return response.json()
+}).then(data => {
+    console.log(data)
+    let currentAlbum = data.getElementById("current-album")
+    currentAlbum.innerHTML = `
+        <h2>${data.currentAlbum.name}<h2>
+    `
+}).catch(err => {
+    console.err(err)
+})
+
+fetch("../albums.json").then(response => {
     return response.json()
 }).then(data => {
     data.forEach(album => {

@@ -6,6 +6,10 @@
     --light-2: #eee;
     --light-3: #ccc;
     --shadow-basic: rgba(50, 50, 93, 0.25) 0 6px 12px -2px, rgba(0, 0, 0, 0.3) 0 3px 7px -3px;
+    
+    --width-album: 150px;
+    --cols: 2;
+    --grid-padding: 2em;
 }
 
 * {
@@ -15,7 +19,7 @@
 }
 
 html {
-    min-width: 350px;
+    /* width: calc( var(--cols)*var(--width-album) + 3 * var(--grid-padding)); */
 }
 
 body {
@@ -33,30 +37,30 @@ header {
 
 h1 {
     color: #ccc;
+    font-size: 1em;
 }
 
 main {
     min-height: 100vh;
-    display: flex;
-    align-items: flex-start;
-    flex-direction: row;
+    display: grid;
+    justify-content: center;
 }
-
 
 /* Album grid */
 #album-grid {
+    flex: .8;
     padding: 1em;
     gap: 1em;
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(var(--cols), var(--width-album));
 }
 
 .album-card {
     position: relative;
     box-shadow: var(--shadow-basic);
     border-radius: .5em;
-    width: 150px;
-    height: 150px;
+    width: var(--width-album);
+    height: var(--width-album);
 }
 
 #current-album{
@@ -67,8 +71,8 @@ main {
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: calc(300px + 1em);
-    height: calc(300px + 1em);
+    width: calc(2*var(--width-album) + 1em);
+    height: calc(2*var(--width-album) + 1em);
 }
 
 #current-album h2 {
@@ -120,41 +124,60 @@ footer {
 /* Info Bar */
 
 #infobar {
-    width: 300px;
-    height: 100%;
-    min-height: 100vh;
+    flex: .2;
+    width: 100%;
     background-color: #fff;
+    justify-self: flex-end;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#infobar p {
+    text-align: center;
 }
 
 
 /* Small screens (phones) */
-@media (min-width: 320px) {
-    #album-grid {
-        grid-template-columns: 150px 150px;
-        padding: 1em 10em
+@media (min-width: 640px) {
+    :root{
+        --cols: 3;
+        --width-album: 150px;
+    }
+    
+    #infobar{
     }
 }
 
 /* Medium screens (tablets) */
-@media (min-width: 640px) {
-    #album-grid {
-        grid-template-columns: 150px 150px 150px;
-        padding: 1em 10em
+@media (min-width: 800px) {
+    h1 {
+        font-size: 1.5em;
+    }
+
+    :root{
+        --width-album:150px;
+        --cols: 4;
+    }
+    
+    #infobar{
     }
 }
 
 /* Large screens (laptops) */
-@media (min-width: 1000px) {
-    #album-grid {
-        grid-template-columns: 150px 150px 150px 150px 150px;
-        padding: 1em 10em
-    }
-}
-
-/* Very Large screens (Monitors etc) */
 @media (min-width: 1366px) {
-    #album-grid {
-        grid-template-columns: 150px 150px 150px 150px 150px 150x 150px;
-        padding: 1em 10em
+    :root{
+        --width-album: 200px;
+        --cols: 5;
+    }
+
+    #infobar{
+        align-self: stretch;
+    }
+
+    main{
+        grid-template-columns: 3fr 1fr;
+        justify-items: center;
+        align-items: start;
     }
 }
