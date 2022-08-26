@@ -1,3 +1,5 @@
+
+
 function expandAlbumCard(album){
     console.log(album.isExpanded)
     let span = album.isExpanded? 1: 2;
@@ -7,25 +9,25 @@ function expandAlbumCard(album){
     album.isExpanded = !album.isExpanded
 }
 
-fetch("https://1001albumsgenerator.com/api/v1/groups/companyx").then(response => {
-    return response.json()
-}).then(data => {
-    console.log(data)
-    let currentAlbum = data.getElementById("current-album")
-    currentAlbum.innerHTML = `
-        <h2>${data.currentAlbum.name}<h2>
-    `
-}).catch(err => {
-    console.err(err)
-})
+// fetch("https://1001albumsgenerator.com/api/v1/groups/companyx").then(response => {
+//     return response.json()
+// }).then(data => {
+//     console.log(data)
+//     let currentAlbum = data.getElementById("current-album")
+//     currentAlbum.innerHTML = `
+//         <h2>${data.currentAlbum.name}<h2>
+//     `
+// }).catch(err => {
+//     console.err(err)
+// })
 
-fetch("../albums.json").then(response => {
+fetch("/albums/").then(response => {
     return response.json()
 }).then(data => {
     data.forEach(album => {
         album.isExpanded = false
         const cardContent = `
-            <img src="./assets/${album.img}" alt="">
+            <img src="/assets/${album.img}" alt="">
             <div class="album-info">
                 <h2 class="album-title">title</h2>
                 <h3 class="album-artist">artist</h3>
@@ -42,5 +44,5 @@ fetch("../albums.json").then(response => {
         document.getElementById("album-grid").appendChild(card)
     })
 }).catch(err => {
-    console.error(err)
+    console.error("error"+ err)
 })

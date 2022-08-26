@@ -1,20 +1,13 @@
 const {response, request} = require('express');
 const express = require('express');
+const bodyParser = require('body-parser');
 const path = require('path');
-
-
 const app = express();
+const albums_router = require('./albums_router');
 
-app.get('/', (request, response) => {
-    const filePath = path.resolve(__dirname, 'public/index.html')
-    response.sendFile(filePath);
-});
-
-app.get('/style.css', (request, response) => {
-    const filePath = path.resolve(__dirname, 'public/style.css')
-    response.sendFile(filePath);
-})
-
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use('/', express.static(path.resolve(__dirname, 'public')));
+app.use('/albums/', albums_router);
 
 const PORT = 8080;
 app.listen(PORT, () => {
