@@ -1,5 +1,6 @@
 const {response, request} = require('express');
 const express = require('express');
+const passport = require('passport');
 const bodyParser = require('body-parser');
 const path = require('path');
 const app = express();
@@ -21,35 +22,48 @@ mongoose.connect(db_url, options).then(() => {
     console.error(e, 'could not connect!')
 });
 
-const User = require('./models/user')
+const User = require('./models/user');
+const { resolve } = require('dns');
 
 //routes
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use('/', express.static(path.resolve(__dirname, 'public')));
 app.use('/login', express.static(path.resolve(__dirname, 'public/login.html')));
+app.use('/register', express.static(path.resolve(__dirname, 'public/register.html')));
 app.use('/albums/', albums_router);
 
 //register
-app.post('/register', function(req, res) {
-    var new_user = new User({
-      username: req.username,
+app.post('/register', async function(req, res) {
+    console.log(`\n\nattempt register: username=${req.body.username} pass=${req.body.password}`)
+    let new_user = new User({
+      username: req.body.username,
     });
-  
-    new_user.password = new_user.generateHash(userInfo.password);
-    new_user.save();
+    
+    new_user.password_hash = new_user.generateHash(req.body.password)
+    const db_info = await User.create(new_user);
+    console.log(db_info,"success\n")
+    
+    res.status(200).redirect("/");
 });
 
 //login
 app.post('/login', function(req, res) {
+    console.log(`\n\nattempt login: username=${req.body.username} pass=${req.body.password}`)
     User.findOne({username: req.body.username}, function(err, user) {
-  
-      if (!user.validPassword(req.body.password)) {
-        //password did not match
-      } else {
-        // password matched. proceed forward
-      }
+        if(err){
+            console.log(err)
+        } else {
+            console.log(user.username) 
+            if (!user.validPassword(req.body.password)) {
+                console.log('password invalid!')
+                res.redirect('/login')
+            } else {
+                console.log('success!')
+                res.redirect('/')        
+            }
+        }
     });
-  });
+});
 
 const PORT = 8080;
 app.listen(PORT, () => {
