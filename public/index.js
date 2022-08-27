@@ -1,11 +1,29 @@
-
+function getCardIndex(card) {
+    var c = card.parentNode.children,
+      i = 0;
+    for (; i < c.length; i++) if (c[i] == card) return i;
+  }
 
 function expandAlbumCard(album){
-    console.log(album.isExpanded)
-    let span = album.isExpanded? 1: 2;
-    let card = document.getElementById(album.img)
-    card.style.gridColumn = `span ${span}`
-    card.style.gridRow = `span ${span}`
+    let grid = document.getElementById("album-grid")
+    console.log(getComputedStyle(grid).getPropertyValue("grid-template-columns"));
+    let r = document.querySelector(':root');
+    let rs = getComputedStyle(r);
+    let widthString = rs.getPropertyValue('--width-album');
+    let heightString = rs.getPropertyValue('--width-album');
+    let card = document.getElementById(album.img)  
+    console.log(getComputedStyle(card).getPropertyValue("grid-column-start"))
+    if(album.isExpanded){
+        card.style.gridColumn = `span 1`
+        card.style.gridRow = `span 1`
+        card.style.width = widthString;
+        card.style.height = heightString;
+    } else {
+        card.style.gridColumn = `span 2`
+        card.style.gridRow = `span 2`
+        card.style.width = widthString.substring(0,widthString.length-2)*2 + "px";
+        card.style.height = heightString.substring(0,heightString.length-2)*2 + "px";
+    }
     album.isExpanded = !album.isExpanded
 }
 
@@ -29,9 +47,9 @@ fetch("/albums/").then(response => {
         const cardContent = `
             <img src="/assets/${album.img}" alt="">
             <div class="album-info">
-                <h2 class="album-title">title</h2>
-                <h3 class="album-artist">artist</h3>
-                <h4 class="album-year">year</h4>
+                <h2 class="album-title">${album.name}</h2>
+                <h3 class="album-artist">${album.artist}</h3>
+                <h4 class="album-year">${album.year}</h4>
             </div>`
 
         const card = document.createElement("div");

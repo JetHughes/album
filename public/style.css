@@ -7,19 +7,16 @@
     --light-3: #ccc;
     --shadow-basic: rgba(50, 50, 93, 0.25) 0 6px 12px -2px, rgba(0, 0, 0, 0.3) 0 3px 7px -3px;
     
-    --width-album: 150px;
+    --width-album: 125px;
     --cols: 2;
     --grid-padding: 2em;
+    --grid-gap: 4px;
 }
 
 * {
     margin: 0;
     box-sizing: border-box;
     font-family: Arial, Helvetica, sans-serif;
-}
-
-html {
-    /* width: calc( var(--cols)*var(--width-album) + 3 * var(--grid-padding)); */
 }
 
 body {
@@ -42,37 +39,34 @@ h1 {
 
 main {
     min-height: 100vh;
-    display: grid;
+    display: flex;
     justify-content: center;
 }
 
 /* Album grid */
 #album-grid {
-    flex: .8;
     padding: 1em;
-    gap: 1em;
+    gap: var(--grid-gap);
     display: grid;
+    justify-content: center;
     grid-template-columns: repeat(var(--cols), var(--width-album));
 }
 
 .album-card {
+    aspect-ratio: 1/1;
     position: relative;
     box-shadow: var(--shadow-basic);
     border-radius: .5em;
+    height: fit-content;
     width: var(--width-album);
     height: var(--width-album);
 }
 
 #current-album{
-    padding: 3em;
-    background-color: #333;
     grid-row: span 2;
     grid-column: span 2;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: calc(2*var(--width-album) + 1em);
-    height: calc(2*var(--width-album) + 1em);
+    width: calc(2*var(--width-album) + var(--grid-gap));
+    height: calc(2*var(--width-album) + var(--grid-gap));
 }
 
 #current-album h2 {
@@ -88,15 +82,16 @@ main {
 .album-title, 
 .album-artist,
 .album-year {
-    position: inherit;
-    left: 50%;
-    transform: translate(-50%, 0);
+    font-size: 12px;
+    text-align: center;
+    margin-top: .5em;
+    max-height: 30%;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
-.album-title{ bottom: 60%;}
-.album-artist{ bottom: 50%;}
-.album-year{ bottom: 40%;}
 
 .album-info {
+    padding: 1em;
     position: absolute;
     border-radius: inherit;
     width: 100%;
@@ -112,6 +107,8 @@ main {
     cursor: pointer;
 }
 
+/* Footer */
+
 footer {
     grid-column: span 3;
     background-color: var(--dark-0);
@@ -121,31 +118,20 @@ footer {
     padding: 2em 0;
 }
 
-/* Info Bar */
-
-#infobar {
-    flex: .2;
-    width: 100%;
-    background-color: #fff;
-    justify-self: flex-end;
+#login-box {
     display: flex;
     flex-direction: column;
-    align-items: center;
 }
 
-#infobar p {
-    text-align: center;
+#login-box form{
+    display: flex;
+    flex-direction: column;
 }
-
 
 /* Small screens (phones) */
 @media (min-width: 640px) {
     :root{
         --cols: 3;
-        --width-album: 150px;
-    }
-    
-    #infobar{
     }
 }
 
@@ -154,27 +140,22 @@ footer {
     h1 {
         font-size: 1.5em;
     }
-
-    :root{
-        --width-album:150px;
-        --cols: 4;
-    }
     
-    #infobar{
+    :root{
+        --cols: 4;
     }
 }
 
 /* Large screens (laptops) */
 @media (min-width: 1366px) {
     :root{
-        --width-album: 200px;
         --cols: 5;
     }
-
+    
     #infobar{
         align-self: stretch;
     }
-
+    
     main{
         grid-template-columns: 3fr 1fr;
         justify-items: center;
