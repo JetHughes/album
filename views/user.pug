@@ -1,0 +1,22 @@
+doctype html
+html(lang='en')
+  head
+    title Album
+    meta(charset='utf-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+    link(rel='stylesheet', href='/global.css')
+    script(src='/index.js', defer)
+  body
+    include components/header.pug
+    main
+      section(id="album-grid")
+        div(id="current-album", class="album-card")
+            img(src=`/assets/cover${user.current}.png`) 
+        each album in user.history 
+            div(class="album-card" id=album)
+                img(src=`/assets/cover${album}.png` alt="")
+                div(class="album-info")
+                    h2(class="album-title") YO
+                    h3(class="album-artist") g
+                    h4(class="album-year") brux
+    include components/footer.pug

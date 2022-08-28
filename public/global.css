@@ -57,7 +57,7 @@ main {
     position: relative;
     box-shadow: var(--shadow-basic);
     border-radius: .5em;
-    height: fit-content;
+    /* height: fit-content; */
     width: var(--width-album);
     height: var(--width-album);
 }
@@ -154,11 +154,5 @@ footer {
     
     #infobar{
         align-self: stretch;
-    }
-    
-    main{
-        grid-template-columns: 3fr 1fr;
-        justify-items: center;
-        align-items: start;
     }
 }

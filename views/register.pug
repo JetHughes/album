@@ -1,0 +1,21 @@
+doctype html
+html(lang='en')
+  head
+    title Album
+    meta(charset='utf-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+    link(rel='stylesheet', href='/global.css')
+    script(src='index.js' defer)
+  body
+    include components/header.pug
+    main
+      div(id="login-box")
+        h1 Register
+        form(action="/submit_register" method="post")
+            label(for="username") Username
+            input(type="text", name="username", id="input-username") 
+            label(for="password") Password
+            input(type="password", name="password", id="input-password") 
+            button(type="submit", id="login-button") Register
+        a(href="/login") Login
+    include components/footer.pug

@@ -1,10 +1,5 @@
-const {response, request} = require('express');
 const express = require('express');
-const passport = require('passport');
-const bodyParser = require('body-parser');
 const path = require('path');
-const app = express();
-const albums_router = require('./albums_router');
 require('dotenv').config();
 
 // Database
@@ -23,49 +18,102 @@ mongoose.connect(db_url, options).then(() => {
 });
 
 const User = require('./models/user');
-const { resolve } = require('dns');
 
-//routes
-app.use(bodyParser.urlencoded({ extended: false }))
-app.use('/', express.static(path.resolve(__dirname, 'public')));
-app.use('/login', express.static(path.resolve(__dirname, 'public/login.html')));
-app.use('/register', express.static(path.resolve(__dirname, 'public/register.html')));
-app.use('/albums/', albums_router);
+// create express 'application'
+const app = express();
 
-//register
-app.post('/register', async function(req, res) {
-    console.log(`\n\nattempt register: username=${req.body.username} pass=${req.body.password}`)
-    let new_user = new User({
-      username: req.body.username,
-    });
-    
-    new_user.password_hash = new_user.generateHash(req.body.password)
-    const db_info = await User.create(new_user);
-    console.log(db_info,"success\n")
-    
-    res.status(200).redirect("/");
+//routers
+const album_router = require('./routers/albums_router');
+const { callbackify } = require('util');
+
+// setup pug as a view engine (SSR engine)
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'pug');
+
+app.use(express.urlencoded({extended: false}))
+app.use(express.static(path.join(__dirname, '/public/')));
+app.use('/album/', album_router);
+
+
+// default route
+app.get('/', function(req, res){
+    res.render('login')
 });
 
+//user homepage
+app.get('/user/:username', function(req, res){
+    User.findOne({username: req.params.username}, function(err, user) {
+        if(user){
+            res.render('user', {user: user})
+        } else {
+            res.redirect('../404')
+        }
+    });
+})
+
+//login and register
+app.get('/login', function(req, res){
+    res.render('login')
+})
+app.get('/register', function(req, res){
+    res.render('register')
+})
+
+//register
+app.post('/submit_register', async function(req, res) {
+    console.log(`\n\nattempt register: username=${req.body.username} pass=${req.body.password}`)
+
+    User.findOne({username: req.body.username}, function(err, user){
+        if(err){
+            console.log(err,"err")
+        }
+
+        if(user){
+            console.log('Username taken');
+        }
+
+        let new_user = new User({
+          username: req.body.username,
+          history: [1,7,4],
+          current: 3
+        });
+        
+        new_user.password_hash = new_user.generateHash(req.body.password)
+        const db_info = await User.create(new_user);
+        console.log(db_info,"success\n")
+        res.redirect(`user/${new_user.username}`)
+    })
+});
+
+
 //login
-app.post('/login', function(req, res) {
+app.post('/submit_login', function(req, res) {
     console.log(`\n\nattempt login: username=${req.body.username} pass=${req.body.password}`)
     User.findOne({username: req.body.username}, function(err, user) {
         if(err){
             console.log(err)
+            res.render('login')
         } else {
-            console.log(user.username) 
-            if (!user.validPassword(req.body.password)) {
+            console.log("try validation")
+            if (!user.validPassword("hello")) {
                 console.log('password invalid!')
-                res.redirect('/login')
+                res.render('login')
             } else {
                 console.log('success!')
-                res.redirect('/')        
+                res.redirect(`user/${user.username}`)
             }
         }
     });
 });
 
-const PORT = 8080;
-app.listen(PORT, () => {
-    console.log(`server is live! http://localhost:${PORT}`);
+//404
+app.get('*', (req, res) => {
+    res.status(404)
+    res.render('404');
+});
+
+// start the server
+const PORT = 8080
+app.listen(8080, () => {
+    console.log(`Server is live: http://localhost:${PORT}`);
 });
