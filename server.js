@@ -37,15 +37,15 @@ app.use(express.static(path.join(__dirname, '/public/')));
 app.use(session({
     resave: false, // don't save session if unmodified
     saveUninitialized: false, // don't create session until something stored
-    secret: 'shhhh, very secret'
+    secret: process.env.SESSION_SECRET
 }));
 
 // default route
-app.get('/', function(req, res){
+app.get('/', function(req, res){    
     res.render('login')
 });
 
-//user homepage
+//pages
 app.get('/user/:username', restrict, function(req, res){
     User.findOne({username: req.params.username}, function(err, user) {
         if(user){
@@ -55,8 +55,6 @@ app.get('/user/:username', restrict, function(req, res){
         }
     });
 })
-
-//login and register
 app.get('/login', function(req, res){
     res.render('login')
 })
@@ -94,14 +92,19 @@ app.post('/submit_register', async function(req, res) {
 
 //authorisation middleware
 function restrict(req, res, next) {
-    if (req.session.user) {
-        console.log("authorising ")
-        next();
-    } else {
+    if(req.params.username){
+        if(req.session.user){
+            console.log("attempt authorising " + req.session.user.username + " to " + req.params.username)
+            if (req.session.user.username === req.params.username) {
+                console.log("success!")
+                return next();
+            }
+        }
         req.session.error = 'Access denied!';
         console.log("acces denied")
-        res.redirect('/login');
+        return res.redirect('/login');
     }
+    return next()
 }
 
 //authenticate
