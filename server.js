@@ -1,4 +1,5 @@
 const express = require('express');
+var session = require('express-session');
 const path = require('path');
 require('dotenv').config();
 
@@ -24,16 +25,20 @@ const app = express();
 
 //routers
 const album_router = require('./routers/albums_router');
-const { callbackify } = require('util');
+app.use('/album/', album_router);
 
 // setup pug as a view engine (SSR engine)
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
+//middle ware
 app.use(express.urlencoded({extended: false}))
 app.use(express.static(path.join(__dirname, '/public/')));
-app.use('/album/', album_router);
-
+app.use(session({
+    resave: false, // don't save session if unmodified
+    saveUninitialized: false, // don't create session until something stored
+    secret: 'shhhh, very secret'
+}));
 
 // default route
 app.get('/', function(req, res){
@@ -41,7 +46,7 @@ app.get('/', function(req, res){
 });
 
 //user homepage
-app.get('/user/:username', function(req, res){
+app.get('/user/:username', restrict, function(req, res){
     User.findOne({username: req.params.username}, function(err, user) {
         if(user){
             res.render('user', {user: user})
@@ -63,13 +68,15 @@ app.get('/register', function(req, res){
 app.post('/submit_register', async function(req, res) {
     console.log(`\n\nattempt register: username=${req.body.username} pass=${req.body.password}`)
 
-    User.findOne({username: req.body.username}, function(err, user){
+    User.findOne({username: req.body.username}, async function(err, user){
         if(err){
             console.log(err,"err")
+            return res.redirect('register')
         }
 
         if(user){
             console.log('Username taken');
+            return res.redirect('register')
         }
 
         let new_user = new User({
@@ -85,24 +92,57 @@ app.post('/submit_register', async function(req, res) {
     })
 });
 
+//authorisation middleware
+function restrict(req, res, next) {
+    if (req.session.user) {
+        console.log("authorising ")
+        next();
+    } else {
+        req.session.error = 'Access denied!';
+        console.log("acces denied")
+        res.redirect('/login');
+    }
+}
+
+//authenticate
+function authenticate(username, password, next){
+    User.findOne({username: username}, function(err, user) {
+        if(err){
+            console.log("failed to authenticate " + username)
+            return next(err, null)
+        }
+        if(user){
+            if (user.validPassword(password)){
+                console.log("authenticated " + username)
+                return next(null, user)
+            }
+        }
+        return next(null, null)
+    });
+}
 
 //login
 app.post('/submit_login', function(req, res) {
     console.log(`\n\nattempt login: username=${req.body.username} pass=${req.body.password}`)
-    User.findOne({username: req.body.username}, function(err, user) {
-        if(err){
-            console.log(err)
-            res.render('login')
-        } else {
-            console.log("try validation")
-            if (!user.validPassword("hello")) {
-                console.log('password invalid!')
-                res.render('login')
-            } else {
-                console.log('success!')
+    authenticate(req.body.username, req.body.password, function(err, user){
+        if(err) return next(err)
+        if(user){
+            req.session.regenerate(function(){
+                req.session.user = user; //maybe only store an id?
                 res.redirect(`user/${user.username}`)
-            }
+            });
+        } else {
+            res.redirect('login')
         }
+    })
+});
+
+//logout
+app.get('/logout', function(req, res){
+    // destroy the user's session to log them out
+    // will be re-created next request
+    req.session.destroy(function(){
+        res.redirect('login');
     });
 });
 
