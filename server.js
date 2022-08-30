@@ -3,7 +3,7 @@ var session = require('express-session');
 const path = require('path');
 require('dotenv').config();
 
-// Database
+//database
 const mongoose = require("mongoose");
 const user = process.env.ATLAS_USER;
 const password = process.env.ATLAS_PASSWORD;
@@ -13,27 +13,27 @@ const options = {
     useUnifiedTopology: true,
 }
 mongoose.connect(db_url, options).then(() => {
-    console.log('successfully connected!')
+    console.log('Successfully connected!')
 }).catch((e) => {
-    console.error(e, 'could not connect!')
+    console.error(e, 'Could not connect!')
 });
 
 const User = require('./models/user');
 
 // create express 'application'
 const app = express();
+app.use(express.static(path.join(__dirname, '/public/')));
 
 //routers
 const album_router = require('./routers/albums_router');
 app.use('/album/', album_router);
 
 // setup pug as a view engine (SSR engine)
-app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
+app.set('views', path.join(__dirname, 'views'));
 
 //middle ware
 app.use(express.urlencoded({extended: false}))
-app.use(express.static(path.join(__dirname, '/public/')));
 app.use(session({
     resave: false, // don't save session if unmodified
     saveUninitialized: false, // don't create session until something stored
@@ -64,16 +64,16 @@ app.get('/register', function(req, res){
 
 //register
 app.post('/submit_register', async function(req, res) {
-    console.log(`\n\nattempt register: username=${req.body.username} pass=${req.body.password}`)
+    console.log(`\n\nAttempt register: username=${req.body.username} pass=${req.body.password}`)
 
     User.findOne({username: req.body.username}, async function(err, user){
         if(err){
-            console.log(err,"err")
+            console.log(err)
             return res.redirect('register')
         }
 
         if(user){
-            console.log('Username taken');
+            console.log('Username Taken');
             return res.redirect('register')
         }
 
@@ -85,8 +85,18 @@ app.post('/submit_register', async function(req, res) {
         
         new_user.password_hash = new_user.generateHash(req.body.password)
         const db_info = await User.create(new_user);
-        console.log(db_info,"success\n")
-        res.redirect(`user/${new_user.username}`)
+        console.log(db_info,"success\n")        
+        authenticate(new_user.username, req.body.password, function(err, user){
+            if(err) return next(err)
+            if(user){
+                req.session.regenerate(function(){
+                    req.session.user = user; //maybe only store an id?
+                    res.redirect(`user/${user.username}`)
+                });
+            } else {
+                res.redirect('login')
+            }
+        })
     })
 });
 
@@ -94,14 +104,14 @@ app.post('/submit_register', async function(req, res) {
 function restrict(req, res, next) {
     if(req.params.username){
         if(req.session.user){
-            console.log("attempt authorising " + req.session.user.username + " to " + req.params.username)
+            console.log("Attempt to authorise " + req.session.user.username + " to " + req.params.username)
             if (req.session.user.username === req.params.username) {
                 console.log("success!")
                 return next();
             }
         }
         req.session.error = 'Access denied!';
-        console.log("acces denied")
+        console.log("Access denied!")
         return res.redirect('/login');
     }
     return next()
@@ -111,12 +121,12 @@ function restrict(req, res, next) {
 function authenticate(username, password, next){
     User.findOne({username: username}, function(err, user) {
         if(err){
-            console.log("failed to authenticate " + username)
+            console.log("Failed to Authenticate " + username)
             return next(err, null)
         }
         if(user){
             if (user.validPassword(password)){
-                console.log("authenticated " + username)
+                console.log("Authenticated " + username)
                 return next(null, user)
             }
         }
@@ -126,7 +136,7 @@ function authenticate(username, password, next){
 
 //login
 app.post('/submit_login', function(req, res) {
-    console.log(`\n\nattempt login: username=${req.body.username} pass=${req.body.password}`)
+    console.log(`\n\nAttempt login: username=${req.body.username} pass=${req.body.password}`)
     authenticate(req.body.username, req.body.password, function(err, user){
         if(err) return next(err)
         if(user){
