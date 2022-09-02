@@ -8,7 +8,7 @@ html(lang='en')
     //- script(src='register.js' defer)
   body
     include components/header.pug
-    main(id="login")
+    main
       div(id="login-box")
         h1 Register
         form(action="/submit_register" method="post")
@@ -18,7 +18,7 @@ html(lang='en')
             input(type="password", name="password", id="input-password") 
             button(type="submit", id="login-button") Register
         if taken
-            p Username Taken!
+            p(id="error-msg") Username Taken!
         p Already a Member? 
             a(href="/login") Login
     include components/footer.pug

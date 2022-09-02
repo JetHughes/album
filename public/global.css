@@ -1,3 +1,4 @@
+/* global */
 :root{
     --dark-0: #010101;
     --dark-1: #111;
@@ -22,6 +23,13 @@
 body {
     background-color: #eeeeee;
 }
+
+#error-msg {
+    color: #eb3535;
+    margin: 1em 0;
+}
+
+/* header */
 
 header {
     height: 60px;
@@ -64,7 +72,6 @@ main {
     position: relative;
     box-shadow: var(--shadow-basic);
     border-radius: .5em;
-    /* height: fit-content; */
     width: var(--width-album);
     height: var(--width-album);
 }
@@ -90,28 +97,34 @@ main {
 .album-artist,
 .album-year {
     font-size: 12px;
-    text-align: center;
     margin-top: .5em;
     max-height: 30%;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
-.album-info {
-    padding: 1em;
-    position: absolute;
-    border-radius: inherit;
+.gradient {
     width: 100%;
-    top: 0;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0);
-    color:rgba(0, 0, 0, 0);
+    position: absolute;
 }
 
-.album-info:hover {
-    background-color: rgba(0, 0, 0, 0.6);
-    color: #ddd;
-    cursor: pointer;
+.album-info {
+    padding: 1em;
+    display: flex;
+    flex-direction: column-reverse;
+    position: absolute;
+    border-radius: inherit;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    color:#fff;
+    background-image: linear-gradient(rgba(0,0,0,0), rgba(0,0,0,0.3));
+}
+
+/* Form */
+form {
+    margin: 1em 0;
 }
 
 /* Footer */
