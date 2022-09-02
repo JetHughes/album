@@ -5,6 +5,7 @@ require('dotenv').config();
 
 //database
 const mongoose = require("mongoose");
+const User = require('./models/user');
 const user = process.env.ATLAS_USER;
 const password = process.env.ATLAS_PASSWORD;
 const db_url = `mongodb+srv://${user}:${password}@album.7wjpoha.mongodb.net/?retryWrites=true&w=majority`
@@ -18,7 +19,6 @@ mongoose.connect(db_url, options).then(() => {
     console.error(e, 'Could not connect!')
 });
 
-const User = require('./models/user');
 
 // create express 'application'
 const app = express();
@@ -41,8 +41,13 @@ app.use(session({
 }));
 
 // default route
-app.get('/', function(req, res){    
-    res.render('login')
+app.get('/', function(req, res){ 
+    if(req.session.user){
+        console.log("already logged in as " + req.session.user.username)
+        res.render('user', {user: req.session.user})
+    } else{
+        res.render('landing')
+    }
 });
 
 //pages
@@ -62,43 +67,6 @@ app.get('/register', function(req, res){
     res.render('register')
 })
 
-//register
-app.post('/submit_register', async function(req, res) {
-    console.log(`\n\nAttempt register: username=${req.body.username} pass=${req.body.password}`)
-
-    User.findOne({username: req.body.username}, async function(err, user){
-        if(err){
-            console.log(err)
-            return res.redirect('register')
-        }
-
-        if(user){
-            console.log('Username Taken');
-            return res.redirect('register')
-        }
-
-        let new_user = new User({
-          username: req.body.username,
-          history: [1,7,4],
-          current: 3
-        });
-        
-        new_user.password_hash = new_user.generateHash(req.body.password)
-        const db_info = await User.create(new_user);
-        console.log(db_info,"success\n")        
-        authenticate(new_user.username, req.body.password, function(err, user){
-            if(err) return next(err)
-            if(user){
-                req.session.regenerate(function(){
-                    req.session.user = user; //maybe only store an id?
-                    res.redirect(`user/${user.username}`)
-                });
-            } else {
-                res.redirect('login')
-            }
-        })
-    })
-});
 
 //authorisation middleware
 function restrict(req, res, next) {
@@ -133,6 +101,44 @@ function authenticate(username, password, next){
         return next(null, null)
     });
 }
+
+//register
+app.post('/submit_register', async function(req, res) {
+    console.log(`\n\nAttempt register: username=${req.body.username} pass=${req.body.password}`)
+
+    User.findOne({username: req.body.username}, async function(err, user){
+        if(err){
+            console.log(err)
+            res.send("Error")
+        }
+
+        if(user){
+            console.log('Username Taken');
+            res.send("Username not available")
+        }
+
+        let new_user = new User({
+          username: req.body.username,
+          history: [1,7,4],
+          current: 3
+        });
+        
+        new_user.password_hash = new_user.generateHash(req.body.password)
+        const db_info = await User.create(new_user);
+        console.log(db_info,"success\n")        
+        authenticate(new_user.username, req.body.password, function(err, user){
+            if(err) return next(err)
+            if(user){
+                req.session.regenerate(function(){
+                    req.session.user = user; //maybe only store an id?
+                    res.redirect(`user/${user.username}`)
+                });
+            } else {
+                res.redirect('login')
+            }
+        })
+    })
+});
 
 //login
 app.post('/submit_login', function(req, res) {
