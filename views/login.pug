@@ -17,5 +17,8 @@ html(lang='en')
             label(for="password") Password
             input(type="password", name="password", id="input-password") 
             button(type="submit", id="login-button") Login
-        a(href="/register") Register
+        if failed
+            p(id="error-msg") Incorrect Username or Password!
+        p Don't have an account? 
+            a(href="/register") Register
     include components/footer.pug

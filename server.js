@@ -64,7 +64,10 @@ app.get('/landing', function(req, res){
     res.render('landing')
 })
 app.get('/login', function(req, res){
-    res.render('login')
+    if(req.query.failed)
+        res.render('login', {failed: true})
+    else 
+        res.render('login')
 })
 app.get('/register', function(req, res){
     if(req.query.taken)
@@ -141,7 +144,7 @@ app.post('/submit_register', async function(req, res) {
                         res.redirect(`user/${user.username}`)
                     });
                 } else {
-                    res.redirect('login')
+                    res.redirect('login?failed=true')
                 }
             })
         }
@@ -159,7 +162,7 @@ app.post('/submit_login', function(req, res) {
                 res.redirect(`user/${user.username}`)
             });
         } else {
-            res.redirect('login')
+            res.redirect('login?failed=true')
         }
     })
 });
