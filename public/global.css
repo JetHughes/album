@@ -26,15 +26,22 @@ body {
 header {
     height: 60px;
     display: flex;
+    position: relative;
     justify-content: center;
     align-items: center;
     background-color: var(--dark-0);
     box-shadow: var(--shadow-basic);
 }
 
-h1 {
+header h1 {
     color: #ccc;
     font-size: 1em;
+}
+
+header a {
+    position: absolute;
+    right: 1em;
+    color: #fff;
 }
 
 main {
@@ -126,6 +133,10 @@ footer {
 #login-box form{
     display: flex;
     flex-direction: column;
+}
+
+#login * {
+    margin: 4px 0;
 }
 
 /* Small screens (phones) */

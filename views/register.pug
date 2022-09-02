@@ -5,10 +5,10 @@ html(lang='en')
     meta(charset='utf-8')
     meta(name='viewport', content='width=device-width, initial-scale=1')
     link(rel='stylesheet', href='/global.css')
-    script(src='index.js' defer)
+    //- script(src='register.js' defer)
   body
     include components/header.pug
-    main
+    main(id="login")
       div(id="login-box")
         h1 Register
         form(action="/submit_register" method="post")
@@ -17,5 +17,8 @@ html(lang='en')
             label(for="password") Password
             input(type="password", name="password", id="input-password") 
             button(type="submit", id="login-button") Register
-        a(href="/login") Login
+        if taken
+            p Username Taken!
+        p Already a Member? 
+            a(href="/login") Login
     include components/footer.pug

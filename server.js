@@ -60,13 +60,18 @@ app.get('/user/:username', restrict, function(req, res){
         }
     });
 })
+app.get('/landing', function(req, res){
+    res.render('landing')
+})
 app.get('/login', function(req, res){
     res.render('login')
 })
 app.get('/register', function(req, res){
-    res.render('register')
+    if(req.query.taken)
+        res.render('register', {taken: true})
+    else 
+        res.render('register')
 })
-
 
 //authorisation middleware
 function restrict(req, res, next) {
@@ -106,37 +111,40 @@ function authenticate(username, password, next){
 app.post('/submit_register', async function(req, res) {
     console.log(`\n\nAttempt register: username=${req.body.username} pass=${req.body.password}`)
 
+    //check if there is already a user with this name
     User.findOne({username: req.body.username}, async function(err, user){
         if(err){
             console.log(err)
-            res.send("Error")
-        }
-
-        if(user){
+            res.redirect('register');
+        } else if(user){
             console.log('Username Taken');
-            res.send("Username not available")
-        }
+            res.redirect('register?taken=true');
+        } else {   
+            //create new user
+            let new_user = new User({
+            username: req.body.username,
+            history: [1,7,4],
+            current: 3
+            });
+            
+            //hash password
+            new_user.password_hash = new_user.generateHash(req.body.password)
+            const db_info = await User.create(new_user);
+            console.log(db_info,"success\n")        
 
-        let new_user = new User({
-          username: req.body.username,
-          history: [1,7,4],
-          current: 3
-        });
-        
-        new_user.password_hash = new_user.generateHash(req.body.password)
-        const db_info = await User.create(new_user);
-        console.log(db_info,"success\n")        
-        authenticate(new_user.username, req.body.password, function(err, user){
-            if(err) return next(err)
-            if(user){
-                req.session.regenerate(function(){
-                    req.session.user = user; //maybe only store an id?
-                    res.redirect(`user/${user.username}`)
-                });
-            } else {
-                res.redirect('login')
-            }
-        })
+            //login
+            authenticate(new_user.username, req.body.password, function(err, user){
+                if(err) return next(err)
+                if(user){
+                    req.session.regenerate(function(){
+                        req.session.user = user; //maybe only store an id?
+                        res.redirect(`user/${user.username}`)
+                    });
+                } else {
+                    res.redirect('login')
+                }
+            })
+        }
     })
 });
 
@@ -161,7 +169,7 @@ app.get('/logout', function(req, res){
     // destroy the user's session to log them out
     // will be re-created next request
     req.session.destroy(function(){
-        res.redirect('login');
+        res.redirect('/');
     });
 });
 
