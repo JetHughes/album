@@ -9,15 +9,15 @@ html(lang='en')
   body
     include components/header.pug
     //- a(href="/logout") Logout
-    main
-      section(id="album-grid")
+    main(id="user-main")
         div(id="current-album", class="album-card")
             img(src=`/assets/cover${user.current}.png`) 
-        each album in user.history 
-            div(class="album-card" id=album)
-                img(src=`/assets/cover${album}.png` alt="")
-                div(class="album-info")
-                    h2(class="album-title") YO
-                    h3(class="album-artist") g
-                    h4(class="album-year") brux
+        section(id="album-list")
+            each album in user.history 
+                div(class="album-list-item")
+                    img(src=`/assets/cover${album.num}.png` alt="")              
+                    div(class="album-info")
+                        p(class="album-title")= album.title
+                        p(class="album-artist")= album.artist
+                        p(class="album-year")= album.year
     include components/footer.pug

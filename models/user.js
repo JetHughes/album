@@ -18,6 +18,10 @@ userSchema.methods.validPassword = function(password) {
     return bcrypt.compareSync(password, this.password_hash);
 };
 
+userSchema.methods.genAlbum = function(){
+    return "hello"
+}
+
 // compile the schema into a model (named 'message')
 const User = mongoose.model('user', userSchema);
 

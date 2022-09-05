@@ -8,10 +8,11 @@
     --light-3: #ccc;
     --shadow-basic: rgba(50, 50, 93, 0.25) 0 6px 12px -2px, rgba(0, 0, 0, 0.3) 0 3px 7px -3px;
     
-    --width-album: 125px;
+    --width-album: 200px;
+    --width-current-album: 300px;
     --cols: 2;
     --grid-padding: 2em;
-    --grid-gap: 4px;
+    --grid-gap: 0em;
 }
 
 * {
@@ -27,6 +28,18 @@ body {
 #error-msg {
     color: #eb3535;
     margin: 1em 0;
+}
+
+main {
+    min-height: 100vh;
+    display: flex;
+    padding: 2em;
+}
+
+#user-main {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
 }
 
 /* header */
@@ -52,35 +65,73 @@ header a {
     color: #fff;
 }
 
-main {
-    min-height: 100vh;
+/* Album list */
+#album-list {
+    margin-top: 3em;
+    width: 100%;
+    background-color: #ddd;
+}
+
+.album-list-item {
     display: flex;
-    justify-content: center;
+    flex-direction: row;
+}
+
+.album-list-item .album-info {
+    position: relative;
+    width: 100%;
+}
+
+.album-list-item .album-title{
+    width: 40%;
+    left: 1em;    
+}
+.album-list-item .album-artist{
+    left: 40%;    
+}
+.album-list-item .album-year{
+    right: 0;   
+}
+
+.album-list-item p {
+    width: 25%;
+    max-height: 12px;
+    font-size: 12px;
+    position: absolute;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    top: 50%;
+    transform: translate(0, -50%);
+}
+
+#album-list img{
+    width: 50px;
+    height: 50px
 }
 
 /* Album grid */
 #album-grid {
+    width: 100vw;
     padding: 1em;
     gap: var(--grid-gap);
     display: grid;
     justify-content: center;
-    grid-template-columns: repeat(var(--cols), var(--width-album));
+    grid-template-columns: repeat(auto-fit, minmax(var(--width-album), 250px));
 }
 
 .album-card {
     aspect-ratio: 1/1;
     position: relative;
     box-shadow: var(--shadow-basic);
-    border-radius: .5em;
-    width: var(--width-album);
-    height: var(--width-album);
+    border-radius: .0em;
+    width: 100%;
 }
 
 #current-album{
     grid-row: span 2;
     grid-column: span 2;
-    width: calc(2*var(--width-album) + var(--grid-gap));
-    height: calc(2*var(--width-album) + var(--grid-gap));
+    width: var(--width-current-album);
+    height: var(--width-current-album);
 }
 
 #current-album h2 {
@@ -93,9 +144,9 @@ main {
     border-radius: inherit;
 }
 
-.album-title, 
-.album-artist,
-.album-year {
+.album-card .album-title, 
+.album-card .album-artist,
+.album-card .album-year {
     font-size: 12px;
     margin-top: .5em;
     max-height: 30%;
@@ -109,7 +160,7 @@ main {
     position: absolute;
 }
 
-.album-info {
+.album-card .album-info {
     padding: 1em;
     display: flex;
     flex-direction: column-reverse;

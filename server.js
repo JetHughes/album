@@ -6,6 +6,7 @@ require('dotenv').config();
 //database
 const mongoose = require("mongoose");
 const User = require('./models/user');
+const Album = require('./models/album');
 const user = process.env.ATLAS_USER;
 const password = process.env.ATLAS_PASSWORD;
 const db_url = `mongodb+srv://${user}:${password}@album.7wjpoha.mongodb.net/?retryWrites=true&w=majority`
@@ -18,7 +19,6 @@ mongoose.connect(db_url, options).then(() => {
 }).catch((e) => {
     console.error(e, 'Could not connect!')
 });
-
 
 // create express 'application'
 const app = express();
@@ -52,7 +52,9 @@ app.get('/', function(req, res){
 
 //pages
 app.get('/user/:username', restrict, function(req, res){
-    User.findOne({username: req.params.username}, function(err, user) {
+    User.findOne({username: req.params.username}, async function(err, user) {
+        const albums = await Album.find({})
+        user.history = user.history.map(num => albums[num])
         if(user){
             res.render('user', {user: user})
         } else {
@@ -183,7 +185,4 @@ app.get('*', (req, res) => {
 });
 
 // start the server
-const PORT = 8080
-app.listen(8080, () => {
-    console.log(`Server is live: http://localhost:${PORT}`);
-});
+module.exports = app;
