@@ -185,8 +185,8 @@ app.get('*', (req, res) => {
 });
 
 // start the server
-module.exports = app;
-// const PORT = 8080
-// app.listen(8080, () => {
-//     console.log(`Server is live: http://localhost:${PORT}`);
-// });
+// module.exports = app;
+const PORT = 8000
+app.listen(8000, () => {
+    console.log(`Server is live: http://localhost:${PORT}`);
+});
