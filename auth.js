@@ -3,7 +3,7 @@ function authorise(req, res, next) {
     console.log('do authorise')
     if(req.params.username){
         console.log("have param: " + req.params.username)
-        console.log("have sessin: " + req.session)
+        console.log("have session: " + req.session)
         if(req.session.user){
             console.log("have user: " + req.session.user)
             console.log("Attempt to authorise " + req.session.user.username + " to " + req.params.username)
