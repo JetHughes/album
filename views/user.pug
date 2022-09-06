@@ -11,7 +11,7 @@ html(lang='en')
     //- a(href="/logout") Logout
     main(id="user-main")
         div(id="current-album", class="album-card")
-            img(src=`/assets/cover${user.current}.png`) 
+            img(src=`/assets/cover${user.current.num}.png`) 
         section(id="album-list")
             each album in user.history 
                 div(class="album-list-item")
