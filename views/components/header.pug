@@ -1,6 +1,6 @@
 header 
-    h1 Album of the Day
+    a(href="/" id="header-heading") Album of the Day
     if user
-        a(href="/logout") Logout
+        a(href="/logout" class="header-link") Logout
     else
-        a(href="/login") Login
+        a(href="/login" class="header-link") Login

@@ -54,16 +54,19 @@ header {
     box-shadow: var(--shadow-basic);
 }
 
-header h1 {
-    color: #ccc;
-    font-size: 1em;
+#header-heading {
+    color: #ddd;
+    font-size: 1.5em;
+    font-weight: bold;
+    text-decoration: none;
 }
 
-header a {
+.header-link {
     position: absolute;
     right: 1em;
     color: #fff;
 }
+
 
 /* Album list */
 #album-list {
