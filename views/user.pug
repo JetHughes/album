@@ -4,18 +4,18 @@ html(lang='en')
     title Album
     meta(charset='utf-8')
     meta(name='viewport', content='width=device-width, initial-scale=1')
-    link(rel='stylesheet', href='/global.css')
-    script(src='/index.js', defer)
+    link(rel='stylesheet', href='../global.css')
+    script(src='../index.js', defer)
   body
     include components/header.pug
     //- a(href="/logout") Logout
     main(id="user-main")
         div(id="current-album", class="album-card")
-            img(src=`/assets/cover${user.current.num}.png`) 
+            img(src=`../assets/cover${user.current.num}.png`) 
         section(id="album-list")
             each album in user.history 
                 div(class="album-list-item")
-                    img(src=`/assets/cover${album.num}.png` alt="")              
+                    img(src=`../assets/cover${album.num}.png` alt="")              
                     div(class="album-info")
                         p(class="album-title")= album.title
                         p(class="album-artist")= album.artist
