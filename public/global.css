@@ -133,6 +133,7 @@ header {
 #current-album{
     grid-row: span 2;
     grid-column: span 2;
+    border-radius: 8px;
     width: var(--width-current-album);
     height: var(--width-current-album);
 }
