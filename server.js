@@ -1,6 +1,8 @@
 const express = require('express');
 const session = require('express-session');
+const https = require('https');
 const path = require('path');
+const fs = require('fs');
 require('dotenv').config();
 
 //database
@@ -47,7 +49,7 @@ app.get('/', function(req, res){
         console.log("already logged in as " + req.session.user.username)
         res.render('user', {user: req.session.user})
     } else{
-        res.render('landing')
+        res.render('index')
     }
 });
 
@@ -127,7 +129,15 @@ app.get('*', (req, res) => {
 
 // start the server
 // module.exports = app;
-const PORT = 8000
-app.listen(8000, () => {
-    console.log(`Server is live: http://localhost:${PORT}`);
-});
+//const PORT = 8000
+//app.listen(8000, () => {
+//    console.log(`Server is live: http://localhost:${PORT}`);
+//});
+const ssl = {
+        key: fs.readFileSync('/etc/letsencrypt/live/www.albumgenerator.tech/privkey.pem'),
+        cert: fs.readFileSync('/etc/letsencrypt/live/www.albumgenerator.tech/fullchain.pem'),
+        ca: fs.readFileSync('/etc/letsencrypt/live/www.albumgenerator.tech/chain.pem'),
+}
+
+//app.listen(8000, () => console.log("app running on port 8000"));
+https.createServer(ssl, app).listen(8080, () => {console.log(`server is live ${process.env.PORT || 8080}`)});
