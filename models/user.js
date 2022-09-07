@@ -1,7 +1,5 @@
 const mongoose = require("mongoose");
 const bcrypt = require('bcrypt');
-const Album = require('./album')
-
 // create a schema
 const userSchema = new mongoose.Schema({
     username: { type: String, required: true },
@@ -24,8 +22,23 @@ userSchema.methods.genAlbum = function(){
     let newAlbum;
     do {
         newAlbum = Math.floor(Math.random() * 13);
-    } while (this.history.includes(newAlbum))
-    return newAlbum
+    } while (this.history.includes(newAlbum))    
+    console.log(`Generated album: ${newAlbum} which is not in ${this.history}`);
+    
+    const new_gen_day = new Date().getDate()
+    const new_history = this.history
+    new_history.push(this.current)
+    User.updateOne({username: this.username}, {$set:{
+        current: newAlbum, 
+        history: new_history, 
+        gen_day: new_gen_day
+    }}, function(err, docs){
+        if(err) {
+            console.log(err)
+        } else {
+            console.log("updated"+docs)
+        }
+    })   
 }
 
 userSchema.statics.authenticate = function(username, password, next){
@@ -59,7 +72,7 @@ userSchema.statics.new = function(username, password, next){
             
             //hash password
             new_user.password_hash = new_user.generateHash(password)
-            new_user.current = new_user.genAlbum()
+            new_user.current = Math.floor(Math.random() * 13)
             console.log(new Date().getDate())
             new_user.gen_day = new Date().getDate()
             await User.create(new_user);
