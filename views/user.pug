@@ -10,11 +10,14 @@ html(lang='en')
     include components/header.pug
     //- a(href="/logout") Logout
     main(id="user-main")
+        h2= user.current.title
+        h3= user.current.artist
+        h4= user.current.year
         div(id="current-album", class="album-card")
             img(src=`../assets/cover${user.current.num}.png`) 
-        section(id="album-list")
+        section(id="album-igrid")
             each album in user.history 
-                div(class="album-list-item")
+                div(class="album-igrid-item")
                     img(src=`../assets/cover${album.num}.png` alt="")              
                     div(class="album-info")
                         p(class="album-title")= album.title
